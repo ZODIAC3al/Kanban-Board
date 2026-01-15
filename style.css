@@ -1,0 +1,149 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background-color: #f7f9fc;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    min-height: 100vh;
+}
+
+.container {
+    text-align: center;
+    width: 100%;
+    padding: 1.2rem;
+}
+
+h1 {
+    padding-bottom: 50px;
+    color: #36445a;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.board-actions {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-action {
+    background-color: #36445a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-action:hover {
+    background-color: #2d3239;
+}
+
+.board {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow-x: auto;
+    gap: 50px;
+    padding-bottom: 20px;
+}
+
+.list {
+    background-color: #e3e4e8;
+    padding: 1rem;
+    border-radius: 8px;
+    min-width: 300px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+    max-height: 100vh;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.list h2 {
+    color: #555;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    text-align: left;
+}
+
+.list-items {
+    flex-grow: 1;
+    min-height: 50px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-bottom: 10px;
+    scrollbar-width: thin; 
+    scrollbar-color: #888 #f1f1f1;
+}
+
+
+
+.card {
+    background-color: white;
+    color: #333;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: grab;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: left;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.card.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.btn-delete-task {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: transparent;
+    border: none;
+    color: #ff5630;
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: none;
+    line-height: 1;
+}
+
+.card:hover .btn-delete-task {
+    display: block;
+}
+
+.btn-delete-task:hover {
+    color: #c92a2a;
+}
+
+.list-footer {
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.icon-delete-col {
+    cursor: pointer;
+    font-size: 1.2rem;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.icon-delete-col:hover {
+    opacity: 1;
+}
