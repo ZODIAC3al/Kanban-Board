@@ -90,12 +90,25 @@ function renderBoard() {
             <div class="list-items"></div>
             <div class="list-footer">
                 <span class="delete-col-btn" style="cursor:pointer">🗑️</span>
+                <span class="add-task-btn" style="cursor:pointer">➕</span>
             </div>
         `;
 
     colDiv.querySelector(".delete-col-btn").addEventListener("click", () => {
       if (confirm("Delete column?")) {
         boardData = boardData.filter((c) => c.id !== column.id);
+        saveData();
+        renderBoard();
+      }
+    });
+    colDiv.querySelector(".add-task-btn").addEventListener("click", () => {
+      const content = prompt("Enter Task Name:");
+      if (content) {
+        let colRef = boardData.find((c)=>c.id===column.id)
+        colRef.tasks.push({
+          id: generateId(),
+          content: content,
+        });
         saveData();
         renderBoard();
       }
