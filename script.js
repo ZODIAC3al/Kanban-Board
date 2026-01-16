@@ -34,6 +34,8 @@ function setupButtons() {
   const addColBtn = document.getElementById("add-col-btn");
   const addTaskBtn = document.getElementById("add-task-btn");
   const resetBoardButton = document.getElementById("reset-board-btn");
+  const saveToPCButton = document.getElementById("save-to-pc-btn");
+  const loadFromPCButton = document.getElementById("load-from-pc-btn");
 
   addColBtn.addEventListener("click", () => {
     const name = prompt("Enter Column Name:");
@@ -73,6 +75,14 @@ function setupButtons() {
       renderBoard();
     }
   });
+
+  saveToPCButton.addEventListener("click", () => {
+    const fileName = prompt("Enter File Name:");
+    saveToPC(fileName);
+  });
+  loadFromPCButton.addEventListener("click", () => {
+    loadFromPC();
+  });
 }
 
 function renderBoard() {
@@ -90,12 +100,25 @@ function renderBoard() {
             <div class="list-items"></div>
             <div class="list-footer">
                 <span class="delete-col-btn" style="cursor:pointer">🗑️</span>
+                <span class="add-task-btn" style="cursor:pointer">➕</span>
             </div>
         `;
 
     colDiv.querySelector(".delete-col-btn").addEventListener("click", () => {
       if (confirm("Delete column?")) {
         boardData = boardData.filter((c) => c.id !== column.id);
+        saveData();
+        renderBoard();
+      }
+    });
+    colDiv.querySelector(".add-task-btn").addEventListener("click", () => {
+      const content = prompt("Enter Task Name:");
+      if (content) {
+        let colRef = boardData.find((c) => c.id === column.id);
+        colRef.tasks.push({
+          id: generateId(),
+          content: content,
+        });
         saveData();
         renderBoard();
       }
@@ -159,4 +182,71 @@ function finalizeMove(cardElement) {
     destCol.tasks.unshift(movedTask);
     saveData();
   }
+}
+
+function saveToPC(fileName) {
+  const jsonString = JSON.stringify(boardData, null, 3);
+  const blob = new Blob([jsonString], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const downloadLink = document.createElement("a");
+  downloadLink.href = url;
+  downloadLink.download = fileName
+    ? fileName
+    : `kboard-${new Date().toISOString().slice(0, 10)}.json`;
+  downloadLink.click();
+  URL.revokeObjectURL(url);
+}
+
+function isValidSchema(data) {
+  // 1. Check if the root is an array
+  if (!Array.isArray(data)) return false;
+
+  for (const column of data) {
+    // 2. Check column structure
+    if (
+      !column ||
+      typeof column !== "object" ||
+      typeof column.id !== "string" ||
+      typeof column.title !== "string" ||
+      !Array.isArray(column.tasks)
+    ) {
+      return false;
+    }
+
+    // 3. Check tasks within the column
+    for (const task of column.tasks) {
+      if (
+        !task ||
+        typeof task !== "object" ||
+        typeof task.id !== "string" ||
+        typeof task.content !== "string"
+      ) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+function loadFromPC() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json";
+  input.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const jsonString = e.target.result;
+      const data = JSON.parse(jsonString);
+      if (isValidSchema(data)) {
+        boardData = data;
+        saveData();
+        renderBoard();
+      } else {
+        alert("Invalid file format");
+      }
+    };
+    reader.readAsText(file);
+  });
+  input.click();
 }
