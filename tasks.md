@@ -6,4 +6,4 @@
 4. adding a check button on each mini task card to move it to next column
 5. ~~adding manual save to json file and reload from that json file~~
 6. ~~cleaning up code to multiple files~~  <sub>did I really need that??</sub>
-7. When a task is grabbed from one column to another, it cannot be deleted
+7. ~~When a task is grabbed from one column to another, it cannot be deleted

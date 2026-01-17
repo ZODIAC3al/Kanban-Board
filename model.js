@@ -82,6 +82,7 @@ export class Column {
     const destCol = this.#board.columns.find((col) => col.id === destColId);
     this.tasks = this.tasks.filter((t) => t.id !== task.id);
     destCol.addTask(task);
+    task.setColumn(destCol);
   }
   getDOMElement() {
     if (this.#hasDOMElement) return this.#colElem;
@@ -174,6 +175,9 @@ export class Task {
     task.id = json.id;
     task.description = json.description;
     return task;
+  }
+  setColumn(newColumn) {
+    this.#column = newColumn;
   }
   getDOMElement() {
     if (this.#hasDOMElement) return this.#taskElem;
