@@ -148,7 +148,27 @@ h1 {
     opacity: 1;
 }
 
-
+.delete-col-btn{
+  font-weight: bold;
+  cursor: pointer;           
+  color: #888;               
+  font-size: 1.4rem;         
+  padding-right: 10px ;          
+  transition: all 0.2s ease;   
+}
+.delete-col-btn:hover {
+    color: rgb(123, 5, 7);
+}
+.add-task-btn{
+  cursor: pointer;           
+  color: #888;               
+  font-size: 1.4rem;         
+  padding-right: 10px ;          
+  transition: all 0.2s ease;   
+}
+.add-task-btn:hover {
+    color: rgb(52, 52, 179);
+}
 .edit-col-btn {
   cursor: pointer;           
   color: #888;               
