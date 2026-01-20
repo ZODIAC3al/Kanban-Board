@@ -84,6 +84,18 @@ export class Column {
     destCol.addTask(task);
     task.setColumn(destCol);
   }
+  propagateTask(task, taskElem) {
+    const currIndx = this.#board.columns.findIndex((col) => col.id === this.id);
+
+    if (currIndx + 1 < this.#board.columns.length) {
+      const distCol = this.#board.columns[currIndx + 1];
+      distCol.addTask(task);
+      task.setColumn(distCol);
+      this.tasks = this.tasks.filter((t) => t.id !== task.id);
+    } else {
+      this.removeTask(task.id, taskElem);
+    }
+  }
   getDOMElement() {
     if (this.#hasDOMElement) return this.#colElem;
     this.#colElem = document.createElement("div");
@@ -186,8 +198,10 @@ export class Task {
     this.#taskElem.draggable = true;
     this.#taskElem.dataset.taskId = this.id;
     this.#taskElem.innerHTML = `
-            ${this.title} 
+            <span class="title-text">${this.title}</span>
             <button class="btn-delete-task">×</button>
+            <button class="btn-complete-task">✔️</button>
+            <span class="edit-col-btn">✎</span>
         `;
 
     this.#taskElem
@@ -197,10 +211,30 @@ export class Task {
         this.#column.removeTask(this.id, this.#taskElem);
         this.#column.saveData();
       });
+    this.#taskElem
+      .querySelector(".btn-complete-task")
+      .addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.#column.propagateTask(this, this.#taskElem);
+        this.#column.saveData();
+      });
+    this.#taskElem
+      .querySelector(".edit-col-btn")
+      .addEventListener("click", (e) => {
+        e.stopPropagation();
+        const newTitle = prompt("Enter new task name:", this.title);
+        if (newTitle) {
+          this.title = newTitle;
+          this.#taskElem.querySelector(".title-text").innerText = newTitle;
+          this.#column.saveData();
+        }
+      });
     this.#taskElem.addEventListener("dragstart", (e) => {
+      e.stopPropagation();
       this.#taskElem.classList.add("dragging");
     });
-    this.#taskElem.addEventListener("dragend", () => {
+    this.#taskElem.addEventListener("dragend", (e) => {
+      e.stopPropagation();
       this.#taskElem.classList.remove("dragging");
       this.#column.finalizeDrag(this, this.#taskElem);
     });

@@ -107,11 +107,16 @@ h1 {
     position: relative;
     word-wrap: break-word;
 }
+.card:hover .edit-col-btn{
+    opacity: 1;
+}
 
 .card.dragging {
     opacity: 0.5;
     cursor: grabbing;
 }
+
+
 
 .btn-delete-task {
     position: absolute;
@@ -126,8 +131,24 @@ h1 {
     display: none;
     line-height: 1;
 }
+.btn-complete-task {
+    position: absolute;
+    top: 25px;
+    right: 5px;
+    background: transparent;
+    border: none;
+    color: #ff5630;
+    cursor: pointer;
+    display: none;
+    line-height: 1;
+    font-size: 8px;
+}
+
 
 .card:hover .btn-delete-task {
+    display: block;
+}
+.card:hover .btn-complete-task {
     display: block;
 }
 
@@ -158,21 +179,24 @@ h1 {
   cursor: pointer;           
   color: #888;               
   font-size: 1.4rem;         
-  padding-right: 10px ;          
+  margin-right: 10px ;          
   transition: all 0.2s ease;   
+  border-radius: 5px;
 }
 .delete-col-btn:hover {
-    color: rgb(123, 5, 7);
+    background-color: rgb(123, 5, 7);
 }
 .add-task-btn{
   cursor: pointer;           
   color: #888;               
   font-size: 1.4rem;         
-  padding-right: 10px ;          
-  transition: all 0.2s ease;   
+  margin-right: 10px ;          
+  transition: all 0.2s ease;
+  border-radius: 5px;
+
 }
 .add-task-btn:hover {
-    color: rgb(52, 52, 179);
+    background-color: rgb(52, 52, 179);
 }
 .edit-col-btn {
   cursor: pointer;           
