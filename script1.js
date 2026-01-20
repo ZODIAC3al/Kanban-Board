@@ -11,7 +11,6 @@ function setupButtons() {
   const resetBoardButton = document.getElementById("reset-board-btn");
   const saveToPCButton = document.getElementById("save-to-pc-btn");
   const loadFromPCButton = document.getElementById("load-from-pc-btn");
-
   addColBtn.addEventListener("click", () => {
     const name = prompt("Enter Column Name:");
     if (name) {

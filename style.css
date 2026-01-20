@@ -49,13 +49,18 @@ h1 {
 }
 
 .board {
+    
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+    justify-content: flex-start; 
+    align-items: flex-start;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
     overflow-x: auto;
     gap: 50px;
     padding-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .list {
@@ -146,4 +151,43 @@ h1 {
 
 .icon-delete-col:hover {
     opacity: 1;
+}
+
+.delete-col-btn{
+  font-weight: bold;
+  cursor: pointer;           
+  color: #888;               
+  font-size: 1.4rem;         
+  padding-right: 10px ;          
+  transition: all 0.2s ease;   
+}
+.delete-col-btn:hover {
+    color: rgb(123, 5, 7);
+}
+.add-task-btn{
+  cursor: pointer;           
+  color: #888;               
+  font-size: 1.4rem;         
+  padding-right: 10px ;          
+  transition: all 0.2s ease;   
+}
+.add-task-btn:hover {
+    color: rgb(52, 52, 179);
+}
+.edit-col-btn {
+  cursor: pointer;           
+  color: #888;               
+  font-size: 1.4rem;         
+  padding-left: 4px ;          
+  transition: all 0.2s ease;  
+    opacity: 0;                 
+}
+
+.list-header:hover .edit-col-btn {
+  opacity: 1;
+}
+
+
+.edit-col-btn:hover {
+    color: rgb(52, 52, 179);
 }

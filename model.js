@@ -9,7 +9,6 @@ export class Board {
     this.#boardElem = boardDOMElem;
     Object.seal(this);
   }
-
   static fromJson(json, boardDOMElem) {
     const board = new Board(boardDOMElem);
     board.id = json.id;
@@ -28,7 +27,9 @@ export class Board {
   clearBoard() {
     this.columns = [];
     this.#boardElem.innerHTML = "";
-    saveData(this);
+    this.addColumn("To do");
+    this.addColumn("In Progress");
+    this.addColumn("Done");
   }
   removeColumn(id, colElem) {
     this.columns = this.columns.filter((column) => column.id !== id);
@@ -81,6 +82,7 @@ export class Column {
     const destCol = this.#board.columns.find((col) => col.id === destColId);
     this.tasks = this.tasks.filter((t) => t.id !== task.id);
     destCol.addTask(task);
+    task.setColumn(destCol);
   }
   getDOMElement() {
     if (this.#hasDOMElement) return this.#colElem;
@@ -90,7 +92,7 @@ export class Column {
     this.#colElem.classList.add("custom-scroll");
     this.#colElem.dataset.colId = this.id;
     this.#colElem.innerHTML = `
-            <div class="list-header"><h2>${this.title}</h2></div>
+            <div class="list-header"><h2><span class="title-text">${this.title}</span> <span class="edit-col-btn" style="cursor:pointer">✎𓂃</span></h2></div>
             <div class="list-items"></div>
             <div class="list-footer">
                 <span class="delete-col-btn" style="cursor:pointer">🗑️</span>
@@ -98,6 +100,17 @@ export class Column {
             </div>
         `;
 
+    this.#colElem
+      .querySelector(".edit-col-btn")
+      .addEventListener("click", (e) => {
+        e.stopPropagation();
+        const newTitle = prompt("Enter new column name:", this.title);
+        if (newTitle) {
+          this.title = newTitle;
+          this.#colElem.querySelector(".title-text").innerText = newTitle;
+          saveData(this.#board);
+        }
+      });
     this.#colElem
       .querySelector(".add-task-btn")
       .addEventListener("click", () => {
@@ -125,6 +138,11 @@ export class Column {
     return this.#colElem;
   }
   saveData() {
+    saveData(this.#board);
+  }
+
+  editName(title) {
+    this.title = title;
     saveData(this.#board);
   }
 
@@ -157,6 +175,9 @@ export class Task {
     task.id = json.id;
     task.description = json.description;
     return task;
+  }
+  setColumn(newColumn) {
+    this.#column = newColumn;
   }
   getDOMElement() {
     if (this.#hasDOMElement) return this.#taskElem;

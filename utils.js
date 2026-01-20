@@ -11,6 +11,9 @@ export function loadData(mainBoardElem) {
     mainBoard = Board.fromJson(parsedObject, mainBoardElem);
   } else {
     mainBoard = new Board(mainBoardElem);
+    mainBoard.addColumn("To Do");
+    mainBoard.addColumn("In Progress");
+    mainBoard.addColumn("Done");
   }
   return mainBoard;
 }
