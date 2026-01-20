@@ -1,25 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kanban Board</title>
+    <title>Modern Kanban</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="container">
-      <h1>Kanban Board</h1>
-      <div class="board"></div>
+      <h1>Modern Kanban</h1>
+
       <div class="board-actions">
-        <button id="add-col-btn" class="btn-action">Add Column</button>
-        <!-- <button id="add-task-btn" class="btn-action">Add Task</button> -->
+        <button id="add-col-btn" class="btn-action">+ Add Column</button>
         <button id="reset-board-btn" class="btn-action">Reset Board</button>
         <button id="save-to-pc-btn" class="btn-action">Save to PC</button>
         <button id="load-from-pc-btn" class="btn-action">Load from PC</button>
+        <input
+          type="file"
+          id="file-input"
+          style="display: none"
+          accept=".json"
+        />
+      </div>
+
+      <div class="board"></div>
+    </div>
+
+    <div id="custom-modal" class="modal-overlay hidden">
+      <div class="modal-box">
+        <h3 id="modal-title">Enter Name</h3>
+        <input
+          type="text"
+          id="modal-input"
+          placeholder="Type here..."
+          autocomplete="off"
+        />
+        <div class="modal-buttons">
+          <button id="modal-cancel" class="btn-modal-cancel">Cancel</button>
+          <button id="modal-confirm" class="btn-modal-confirm">Confirm</button>
+        </div>
       </div>
     </div>
 
-    <script type="module" src="script1.js"></script>
-    <!-- <script src="script.js"></script> -->
+    <script type="module" src="script.js"></script>
   </body>
 </html>
