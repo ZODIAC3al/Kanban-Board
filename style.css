@@ -231,7 +231,6 @@ h1::after {
   margin-right: 4px;
 }
 
-
 /* Edit/Delete Column Icons */
 .list-header .edit-col-btn,
 .list-header .delete-col-btn {
@@ -501,4 +500,83 @@ h1::after {
 }
 .btn-modal-confirm.btn-danger:hover {
   background-color: #c0392b;
+}
+/* ========================= */
+/* 📱 Mobile First (<= 768px) */
+/* ========================= */
+@media (max-width: 768px) {
+  body {
+    align-items: stretch;
+  }
+
+  .container {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  /* Header spacing */
+  h1 {
+    font-size: 1.2rem;
+    padding: 16px 20px;
+  }
+
+  .board-actions {
+    padding: 12px 20px;
+    flex-wrap: wrap;
+  }
+
+  .btn-action {
+    flex: 1 1 100%;
+  }
+
+  /* Board becomes vertical */
+  .board {
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    gap: 20px;
+    padding: 10px 20px 30px;
+  }
+
+  /* Columns full width */
+  .list {
+    width: 100%;
+    min-width: 100%;
+    max-height: none;
+  }
+
+  .list-items {
+    max-height: none;
+  }
+}
+
+/* ========================= */
+/* 📲 Tablet (769px - 1024px) */
+/* ========================= */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .board {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    overflow-x: hidden;
+  }
+
+  .list {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* ========================= */
+/* 💻 Large Screens (>= 1400px) */
+/* ========================= */
+@media (min-width: 1400px) {
+  .board {
+    gap: 40px;
+  }
+
+  .list {
+    min-width: 360px;
+    width: 360px;
+  }
 }
