@@ -343,7 +343,7 @@ class Column {
       </div>
       <div class="list-items"></div>
       <div class="list-footer">
-        <span class="delete-col-btn" title="Delete Column">🗑️</span>
+        <span class="delete-col-btn" title="Delete Column">Delete Column</span>
         <button class="add-task-btn">Add New Task</button>
       </div>
     `;

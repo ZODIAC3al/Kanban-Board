@@ -212,8 +212,17 @@ h1::after {
 
 /* --- Buttons in Columns --- */
 
-/* "Add Task" Button - Themed per column */
-.add-task-btn {
+/* --- Footer Layout --- */
+.column-footer {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Spacing between the two buttons */
+}
+
+/* --- 1. Shared Button Style (Base) --- */
+.add-task-btn,
+.delete-col-btn {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
@@ -225,12 +234,46 @@ h1::after {
   align-items: center;
   transition: all 0.2s;
   border: none;
-}
-.add-task-btn::before {
-  content: "+ ";
-  margin-right: 4px;
+  font-family: inherit; /* Ensures fonts match */
 }
 
+/* --- 2. Add Task Button (Themed) --- */
+.add-task-btn::before {
+  content: "+ ";
+  margin-right: 6px;
+  font-weight: 700;
+}
+
+/* Theme Colors for Add Button */
+.column[data-color="purple"] .add-task-btn { background: var(--col-1-bg); color: var(--col-1-main); }
+.column[data-color="purple"] .add-task-btn:hover { background: var(--col-1-main); color: white; }
+
+.column[data-color="orange"] .add-task-btn { background: var(--col-2-bg); color: var(--col-2-main); }
+.column[data-color="orange"] .add-task-btn:hover { background: var(--col-2-main); color: white; }
+
+.column[data-color="green"] .add-task-btn { background: var(--col-3-bg); color: var(--col-3-main); }
+.column[data-color="green"] .add-task-btn:hover { background: var(--col-3-main); color: white; }
+
+/* --- 3. Delete Column Button (Red/Danger) --- */
+.delete-col-btn {
+  background-color: #fee2e2; /* Soft Red Bg */
+  color: #dc2626;  
+  margin-bottom: 8px;          /* Dark Red Text */
+}
+
+/* Icon for Delete (Trash Can) using CSS content */
+.delete-col-btn::before {
+  content: "🗑"; /* Or use "×" for a cross */
+  margin-right: 6px;
+  font-size: 0.9em;
+}
+
+.delete-col-btn:hover {
+  background-color: #ef4444; /* Bright Red */
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(239, 68, 68, 0.3);
+}
 /* Edit/Delete Column Icons */
 .list-header .edit-col-btn,
 .list-header .delete-col-btn {
