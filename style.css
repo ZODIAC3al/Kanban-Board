@@ -31,6 +31,9 @@ body {
 .ms-n2 {
   margin-left: -8px;
 }
+.search-responsive {
+  width: 250px; /* Desktop width */
+}
 
 /* Toolbar */
 .toolbar {
@@ -199,6 +202,9 @@ body {
     overflow-y: auto; /* Main page scroll */
     overflow-x: hidden;
     padding-bottom: 80px !important;
+  }
+  .search-responsive {
+    width: 140px; /* Mobile width: narrower so it fits */
   }
 
   #board-columns {

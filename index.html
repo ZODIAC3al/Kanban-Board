@@ -26,15 +26,15 @@
         </a>
 
         <div class="d-flex align-items-center ms-auto gap-2 gap-md-3">
-          <div class="input-group d-md-flex" style="width: 250px">
-            <span class="input-group-text bg-light border-0"
-              ><i class="fas fa-search text-muted"></i
-            ></span>
+          <div class="input-group d-flex search-responsive">
+            <span class="input-group-text bg-light border-0">
+              <i class="fas fa-search text-muted"></i>
+            </span>
             <input
               type="text"
               class="form-control bg-light border-0"
               id="search-input"
-              placeholder="Search tasks..."
+              placeholder="Search..."
             />
           </div>
 
@@ -94,7 +94,7 @@
             data-bs-toggle="dropdown"
           >
             <i class="fas fa-filter me-1 text-muted"></i>
-            <span class=" d-sm-inline">Filter</span>
+            <span class="d-sm-inline">Filter</span>
           </button>
           <ul class="dropdown-menu shadow-sm border-0" id="filter-options">
             <li>
@@ -125,7 +125,7 @@
             data-bs-toggle="dropdown"
           >
             <i class="fas fa-sort me-1 text-muted"></i>
-            <span class=" d-sm-inline">Sort</span>
+            <span class="d-sm-inline">Sort</span>
           </button>
           <ul class="dropdown-menu shadow-sm border-0" id="sort-options">
             <li>
@@ -153,7 +153,7 @@
 
         <button class="btn btn-primary btn-sm px-3 flex-fill" id="export-btn">
           <i class="fas fa-download me-1"></i>
-          <span class=" d-sm-inline">Export</span>
+          <span class="d-sm-inline">Export</span>
         </button>
       </div>
     </div>
