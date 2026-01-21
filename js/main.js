@@ -1,4 +1,3 @@
-// main.js
 import { KanbanStore } from "./store.js";
 import { UI } from "./ui.js";
 
@@ -8,7 +7,7 @@ const taskModal = new bootstrap.Modal(document.getElementById("taskModal"));
 
 let currentTask = null;
 let currentView = "board";
-let activeFilter = null;
+let activeFilter = null; // null means "All"
 let isSorted = false;
 
 function init() {
@@ -17,41 +16,52 @@ function init() {
 }
 
 function render() {
-  let dataToRender = structuredClone(boardData);
+  // 1. Clone data to avoid mutating the original source
+  let dataToRender = JSON.parse(JSON.stringify(boardData));
 
-  // FILTER
-  if (activeFilter) {
+  // 2. FILTER LOGIC
+  if (activeFilter && activeFilter !== "All") {
     dataToRender.forEach((col) => {
       col.tasks = col.tasks.filter((t) => t.tag === activeFilter);
     });
   }
 
-  // SORT
+  // 3. SORT LOGIC
   if (isSorted) {
     dataToRender.forEach((col) => {
       col.tasks.sort((a, b) => b.progress - a.progress);
     });
   }
 
-  // LIST VIEW
+  // 4. LIST VIEW TRANSFORM
   if (currentView === "list") {
+    const allTasks = [];
+    dataToRender.forEach((col) => {
+      // Add column name to task for context in list view if needed
+      allTasks.push(...col.tasks);
+    });
+
     dataToRender = [
       {
-        id: "list",
+        id: "list-view",
         title: "All Tasks",
-        tasks: dataToRender.flatMap((c) => c.tasks),
+        tasks: allTasks,
+        colorClass: "todo", // Default color
       },
     ];
   }
 
   UI.renderBoard(dataToRender, boardContainer);
-  setupDragAndDrop();
+
+  // Only enable drag and drop if we are in Board view and NOT filtering/sorting
+  // (dragging while filtered causes data loss or weird reordering)
+  if (currentView === "board" && !activeFilter && !isSorted) {
+    setupDragAndDrop();
+  }
 }
 
 // ---------------- Drag & Drop ----------------
 function setupDragAndDrop() {
-  if (currentView === "list") return;
-
   const cards = document.querySelectorAll(".task-card");
   const columns = document.querySelectorAll(".kanban-task-list");
 
@@ -74,21 +84,25 @@ function setupDragAndDrop() {
 
 function updateDataModelFromDOM() {
   const newData = [];
-
   document.querySelectorAll(".kanban-col").forEach((colEl) => {
     const colId = colEl.dataset.colId;
     const oldCol = boardData.find((c) => c.id === colId);
 
+    // Get task IDs in new order
     const taskIds = [...colEl.querySelectorAll(".task-card")].map(
       (t) => t.dataset.taskId,
     );
 
     const newTasks = [];
     taskIds.forEach((id) => {
-      boardData.forEach((c) => {
+      // Find task object in original data
+      for (const c of boardData) {
         const found = c.tasks.find((t) => t.id === id);
-        if (found) newTasks.push(found);
-      });
+        if (found) {
+          newTasks.push(found);
+          break;
+        }
+      }
     });
 
     newData.push({ ...oldCol, tasks: newTasks });
@@ -101,27 +115,57 @@ function updateDataModelFromDOM() {
 
 // ---------------- Events ----------------
 function setupEventListeners() {
-  // Toolbar buttons
-  document.querySelectorAll(".view-toggles button")[0].onclick = () => {
-    currentView = "board";
-    render();
-  };
+  // 1. View Toggles (Board vs List)
+  const viewBtns = document.querySelectorAll("#view-mode-group button");
+  if (viewBtns.length >= 2) {
+    viewBtns[0].onclick = () => {
+      currentView = "board";
+      toggleViewClasses(0);
+      render();
+    };
+    viewBtns[1].onclick = () => {
+      currentView = "list";
+      toggleViewClasses(1);
+      render();
+    };
+  }
 
-  document.querySelectorAll(".view-toggles button")[1].onclick = () => {
-    currentView = "list";
-    render();
-  };
+  // 2. FILTER FUNCTIONALITY (Fix)
+  // Listen to clicks on the Dropdown Items specifically
+  const filterItems = document.querySelectorAll("[data-filter]");
+  filterItems.forEach((item) => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
 
-  document.querySelectorAll(".actions button")[0].onclick = () => {
-    activeFilter = activeFilter ? null : "Important";
-    render();
-  };
+      // Visual: Update 'active' class on dropdown
+      filterItems.forEach((el) => el.classList.remove("active"));
+      e.target.classList.add("active");
 
-  document.querySelectorAll(".actions button")[1].onclick = () => {
-    isSorted = !isSorted;
-    render();
-  };
+      // Logic: Set filter
+      const selectedFilter = e.target.getAttribute("data-filter");
+      activeFilter = selectedFilter === "All" ? null : selectedFilter;
 
+      render();
+    });
+  });
+
+  // 3. SORT FUNCTIONALITY
+  const sortItems = document.querySelectorAll("[data-sort]");
+  sortItems.forEach((item) => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      // Visual
+      sortItems.forEach((el) => el.classList.remove("active"));
+      e.target.classList.add("active");
+
+      // Logic (Simple toggle for now based on your previous code, or strictly by progress)
+      // If you want strictly progress sort:
+      isSorted = e.target.getAttribute("data-sort") === "progress-desc";
+      render();
+    });
+  });
+
+  // 4. Export
   document.getElementById("export-btn").onclick = () => {
     const dataStr =
       "data:text/json;charset=utf-8," +
@@ -132,16 +176,28 @@ function setupEventListeners() {
     a.click();
   };
 
-  // Board interactions
+  // 5. Board Interactions (Edit/Add)
   boardContainer.addEventListener("click", (e) => {
-    if (e.target.closest(".add-task-btn")) {
-      openModal(null, e.target.closest(".add-task-btn").dataset.colId);
-    } else if (e.target.closest(".task-card")) {
-      const card = e.target.closest(".task-card");
+    // Add Button
+    const addBtn = e.target.closest(".add-task-btn");
+    if (addBtn) {
+      openModal(null, addBtn.dataset.colId);
+      return;
+    }
+
+    // Edit Card
+    const card = e.target.closest(".task-card");
+    // Ignore clicks on buttons inside the card to prevent double triggers if any
+    if (card && !e.target.closest("button")) {
       openModal(
         card.dataset.taskId,
         card.closest(".kanban-col")?.dataset.colId,
       );
+    }
+    // Also handle specific edit button click if exists
+    if (e.target.closest(".edit-task-btn")) {
+      const c = e.target.closest(".task-card");
+      openModal(c.dataset.taskId, c.closest(".kanban-col")?.dataset.colId);
     }
   });
 
@@ -149,25 +205,50 @@ function setupEventListeners() {
   document.getElementById("btn-delete-task").onclick = deleteTask;
 }
 
+// Helper to toggle active class on view buttons
+function toggleViewClasses(activeIndex) {
+  const btns = document.querySelectorAll("#view-mode-group button");
+  btns.forEach((b) => b.classList.remove("active-view"));
+  if (btns[activeIndex]) btns[activeIndex].classList.add("active-view");
+}
+
 // ---------------- Modal ----------------
 function openModal(taskId, colId) {
-  document.getElementById("task-form").reset();
-  document.getElementById("task-col-id").value = colId;
+  const form = document.getElementById("task-form");
+  if (form) form.reset();
+
+  document.getElementById("task-col-id").value = colId || "";
 
   if (taskId) {
-    boardData.forEach((c) => {
-      const t = c.tasks.find((t) => t.id === taskId);
-      if (t) currentTask = t;
-    });
+    // Find task across all columns
+    let foundTask = null;
+    for (const col of boardData) {
+      const t = col.tasks.find((x) => x.id === taskId);
+      if (t) {
+        foundTask = t;
+        break;
+      }
+    }
+    currentTask = foundTask;
 
-    document.getElementById("task-id").value = currentTask.id;
-    document.getElementById("task-title").value = currentTask.title;
-    document.getElementById("task-tag").value = currentTask.tag;
-    document.getElementById("task-progress").value = currentTask.progress;
-    document.getElementById("btn-delete-task").style.display = "block";
+    if (currentTask) {
+      document.getElementById("task-id").value = currentTask.id;
+      document.getElementById("task-title").value = currentTask.title;
+      document.getElementById("task-tag").value = currentTask.tag;
+      document.getElementById("task-progress").value = currentTask.progress;
+      // Trigger input event to update output number visually
+      document
+        .getElementById("task-progress")
+        .dispatchEvent(new Event("input"));
+
+      const delBtn = document.getElementById("btn-delete-task");
+      if (delBtn) delBtn.style.display = "block";
+    }
   } else {
     currentTask = null;
-    document.getElementById("btn-delete-task").style.display = "none";
+    document.getElementById("task-id").value = "";
+    const delBtn = document.getElementById("btn-delete-task");
+    if (delBtn) delBtn.style.display = "none";
   }
 
   taskModal.show();
@@ -183,6 +264,7 @@ function saveTask() {
   if (!title) return alert("Title required");
 
   if (id) {
+    // EDIT EXISTING
     boardData.forEach((c) =>
       c.tasks.forEach((t) => {
         if (t.id === id) {
@@ -193,9 +275,10 @@ function saveTask() {
       }),
     );
   } else {
-    boardData
-      .find((c) => c.id === colId)
-      .tasks.push({
+    // CREATE NEW
+    const col = boardData.find((c) => c.id === colId);
+    if (col) {
+      col.tasks.push({
         id: KanbanStore.generateId(),
         title,
         tag,
@@ -204,6 +287,7 @@ function saveTask() {
         likes: 0,
         users: [1],
       });
+    }
   }
 
   KanbanStore.saveData(boardData);

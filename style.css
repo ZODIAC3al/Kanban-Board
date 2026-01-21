@@ -67,11 +67,6 @@ body {
   display: none;
 }
 
-/* The Grid/Row that holds columns */
-#board-columns {
-  height: 100%;
-}
-
 /* ================= GENERIC COLUMN STYLES ================= */
 .kanban-col {
   display: flex;
@@ -208,10 +203,10 @@ body {
 
   #board-columns {
     display: flex;
-    flex-direction: column; /* Stack vertically */
-    height: auto;
+    flex-direction: column;
+    /* ADD !important HERE to override Bootstrap's h-100 */
+    height: auto !important;
   }
-
   .kanban-col {
     width: 100%;
     min-width: 100%;
@@ -241,7 +236,10 @@ body {
   }
   .actions {
     width: 100%;
-    overflow-x: auto;
+    /* CHANGED: Removed overflow-x: auto to stop clipping dropdowns */
+    overflow: visible;
+    /* CHANGED: Allow buttons to wrap to a new line if they don't fit */
+    flex-wrap: wrap;
     padding-bottom: 4px;
   }
   /* Hide action scrollbar too */
