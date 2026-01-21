@@ -245,20 +245,38 @@ h1::after {
 }
 
 /* Theme Colors for Add Button */
-.column[data-color="purple"] .add-task-btn { background: var(--col-1-bg); color: var(--col-1-main); }
-.column[data-color="purple"] .add-task-btn:hover { background: var(--col-1-main); color: white; }
+.column[data-color="purple"] .add-task-btn {
+  background: var(--col-1-bg);
+  color: var(--col-1-main);
+}
+.column[data-color="purple"] .add-task-btn:hover {
+  background: var(--col-1-main);
+  color: white;
+}
 
-.column[data-color="orange"] .add-task-btn { background: var(--col-2-bg); color: var(--col-2-main); }
-.column[data-color="orange"] .add-task-btn:hover { background: var(--col-2-main); color: white; }
+.column[data-color="orange"] .add-task-btn {
+  background: var(--col-2-bg);
+  color: var(--col-2-main);
+}
+.column[data-color="orange"] .add-task-btn:hover {
+  background: var(--col-2-main);
+  color: white;
+}
 
-.column[data-color="green"] .add-task-btn { background: var(--col-3-bg); color: var(--col-3-main); }
-.column[data-color="green"] .add-task-btn:hover { background: var(--col-3-main); color: white; }
+.column[data-color="green"] .add-task-btn {
+  background: var(--col-3-bg);
+  color: var(--col-3-main);
+}
+.column[data-color="green"] .add-task-btn:hover {
+  background: var(--col-3-main);
+  color: white;
+}
 
 /* --- 3. Delete Column Button (Red/Danger) --- */
 .delete-col-btn {
   background-color: #fee2e2; /* Soft Red Bg */
-  color: #dc2626;  
-  margin-bottom: 8px;          /* Dark Red Text */
+  color: #dc2626;
+  margin-bottom: 8px; /* Dark Red Text */
 }
 
 /* Icon for Delete (Trash Can) using CSS content */
